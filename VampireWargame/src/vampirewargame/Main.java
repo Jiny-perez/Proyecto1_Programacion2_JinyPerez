@@ -8,7 +8,7 @@ package vampirewargame;
  *
  * @author marye
  */
-public class VampireWargame {
+public class Main {
 
     /**
      * @param args the command line arguments
