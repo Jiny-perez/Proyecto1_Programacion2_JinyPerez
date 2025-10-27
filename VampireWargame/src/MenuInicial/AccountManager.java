@@ -1,13 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package MenuInicial;
+
+import java.util.List;
 
 /**
  *
  * @author marye
  */
-public class AccountManager {
-    
+public interface AccountManager {
+
+    boolean agregarPlayer(Account acc);
+
+    Account buscarPlayer(String username);
+
+    boolean eliminarPlayer(String username);
+
+    List<Account> rankingPlayers();
 }
+
