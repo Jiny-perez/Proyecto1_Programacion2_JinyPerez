@@ -74,12 +74,14 @@ public class MiCuenta {
         PDatos.add(lblPuntos);
 
         // Panel de botones
-        JPanel PBotones = new JPanel(new GridLayout(1, 2, 30, 0));
+        JPanel PBotones = new JPanel(new GridLayout(2, 1, 30, 30));
         PBotones.setBackground(Color.WHITE);
 
         JButton BtnCambiarPassword = new JButton("CAMBIAR CONTRASEÑA");
         JButton BtnEliminarCuenta = new JButton("ELIMINAR CUENTA");
-        JButton[] botones = {BtnCambiarPassword, BtnEliminarCuenta};
+        JButton BtnSalir = new JButton("Salir");
+
+        JButton[] botones = {BtnCambiarPassword, BtnEliminarCuenta, BtnSalir };
 
         for (JButton b : botones) {
             b.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -110,6 +112,11 @@ public class MiCuenta {
                 VMiCuenta.dispose();
                 new MenuInicio(registro);
             }
+        });
+        
+         BtnSalir.addActionListener(e -> {
+                new MenuPrincipal(registro, player);
+                VMiCuenta.dispose();
         });
 
         PCentral.add(lblTitulo, BorderLayout.NORTH);
@@ -143,4 +150,3 @@ public class MiCuenta {
         }
     }
 }
-
