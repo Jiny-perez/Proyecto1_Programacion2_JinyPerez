@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
  */
 public class HombreLobo extends Piezas {
 
-    public HombreLobo() {
-        super("HombreLobo", 5, 5, 2);
+    public HombreLobo(int jugador) {
+        super("Hombre Lobo",jugador, 5, 5, 2);
     }
 
     public boolean esAdyacente(int filaDestino, int columnaDestino, int filaActual, int columnaActual) {

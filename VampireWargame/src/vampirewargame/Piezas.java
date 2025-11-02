@@ -10,12 +10,14 @@ import javax.swing.JOptionPane;
 public abstract class Piezas {
 
     protected String nombre;
+    protected int jugador;
     protected int ataque;
     protected int vida;
     protected int escudo;
 
-    public Piezas(String nombre, int ataque, int vida, int escudo) {
+    public Piezas(String nombre, int jugador, int ataque, int vida, int escudo) {
         this.nombre = nombre;
+        this.jugador=jugador;
         this.ataque = ataque;
         this.vida = vida;
         this.escudo = escudo;
@@ -23,6 +25,10 @@ public abstract class Piezas {
 
     public String getNombre() {
         return nombre;
+    }
+    
+    public int getJugador(){
+        return jugador;
     }
 
     public int getAtaque() {

@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
  */
 public class Zombie extends Piezas {
 
-    public Zombie() {
-        super("Zombie", 1, 1, 0);
+    public Zombie(int jugador) {
+        super("Zombie", jugador, 1, 1, 0);
     }
 
     public boolean esAdyacente(int filaDestino, int columnaDestino, int filaActual, int columnaActual) {

@@ -2,14 +2,12 @@ package vampirewargame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.border.Border;
 
 /**
  *
  * @author marye
  */
-public class InterfazGame {
+public class InterfazJuego {
 
     private JButton[][] casillas;
     private Tablero tablero;
@@ -17,7 +15,7 @@ public class InterfazGame {
     private int filaSeleccionada = -1;
     private int columnaSeleccionada = -1;
 
-    public InterfazGame() {
+    public InterfazJuego() {
         tablero = new Tablero();
         tablero.PosicionPiezas();
         initComponents();
@@ -152,6 +150,6 @@ public class InterfazGame {
     }
 
     public static void main(String[] args) {
-        new InterfazGame();
+        new InterfazJuego();
     }
 }

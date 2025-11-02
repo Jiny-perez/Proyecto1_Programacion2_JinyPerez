@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
  */
 public class Muerte extends Piezas {
 
-    public Muerte() {
-        super("Muerte", 4, 3, 1);
+    public Muerte(int jugador) {
+        super("Muerte", jugador, 4, 3, 1);
     }
 
     public void ataqueEspecial(Tablero tablero, int fila, int columna) {
@@ -99,7 +99,7 @@ public class Muerte extends Piezas {
 
     public void conjurarZombie(Tablero tablero, int fila, int columna) {
         if (tablero.casillaVacia(fila, columna)) {
-            Piezas zombie = new Zombie();
+            Piezas zombie = new Zombie(jugador);
             tablero.setPieza(fila, columna, zombie);
         } else {
             JOptionPane.showMessageDialog(null, "Error: Casilla llena");

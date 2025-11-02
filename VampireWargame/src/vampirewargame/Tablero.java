@@ -11,19 +11,19 @@ class Tablero {
     private Piezas[][] posicion = new Piezas[6][6];
 
     public void PosicionPiezas() {
-        posicion[0][0] = new HombreLobo();
-        posicion[0][1] = new Vampiro();
-        posicion[0][2] = new Muerte();
-        posicion[0][3] = new Muerte();
-        posicion[0][4] = new Vampiro();
-        posicion[0][5] = new HombreLobo();
+        posicion[0][0] = new HombreLobo(2);
+        posicion[0][1] = new Vampiro(2);
+        posicion[0][2] = new Muerte(2);
+        posicion[0][3] = new Muerte(2);
+        posicion[0][4] = new Vampiro(2);
+        posicion[0][5] = new HombreLobo(2);
 
-        posicion[5][0] = new HombreLobo();
-        posicion[5][1] = new Vampiro();
-        posicion[5][2] = new Muerte();
-        posicion[5][3] = new Muerte();
-        posicion[5][4] = new Vampiro();
-        posicion[5][5] = new HombreLobo();
+        posicion[5][0] = new HombreLobo(1);
+        posicion[5][1] = new Vampiro(1);
+        posicion[5][2] = new Muerte(1);
+        posicion[5][3] = new Muerte(1);
+        posicion[5][4] = new Vampiro(1);
+        posicion[5][5] = new HombreLobo(1);
     }
 
     public ImageIcon getPiezas(int fila, int columna) {
@@ -31,7 +31,7 @@ class Tablero {
         if (p == null) {
             return null;
         }
-        String ruta = "/Imagenes/" + p.getNombre() + ".png";
+        String ruta = "/Imagenes/"+p.getNombre().replace(" ", "")+p.getJugador()+".png";
         return new ImageIcon(getClass().getResource(ruta));
     }
 
