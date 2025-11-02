@@ -9,30 +9,30 @@ import javax.swing.*;
 class Tablero {
 
     private Piezas[][] posicion = new Piezas[6][6];
-    private ImageIcon[][] pieza = new ImageIcon[6][6];
 
     public void PosicionPiezas() {
-        ImageIcon imagenHombreLobo = new ImageIcon(getClass().getResource("/Imagenes/HombreLobo.png"));
-        ImageIcon imagenVampiro = new ImageIcon(getClass().getResource("/Imagenes/Vampiro.png"));
-        ImageIcon imagenMuerte = new ImageIcon(getClass().getResource("/Imagenes/Muerte.png"));
+        posicion[0][0] = new HombreLobo();
+        posicion[0][1] = new Vampiro();
+        posicion[0][2] = new Muerte();
+        posicion[0][3] = new Muerte();
+        posicion[0][4] = new Vampiro();
+        posicion[0][5] = new HombreLobo();
 
-        pieza[0][0] = imagenHombreLobo;
-        pieza[0][1] = imagenVampiro;
-        pieza[0][2] = imagenMuerte;
-        pieza[0][3] = imagenMuerte;
-        pieza[0][4] = imagenVampiro;
-        pieza[0][5] = imagenHombreLobo;
-
-        pieza[5][0] = imagenHombreLobo;
-        pieza[5][1] = imagenVampiro;
-        pieza[5][2] = imagenMuerte;
-        pieza[5][3] = imagenMuerte;
-        pieza[5][4] = imagenVampiro;
-        pieza[5][5] = imagenHombreLobo;
+        posicion[5][0] = new HombreLobo();
+        posicion[5][1] = new Vampiro();
+        posicion[5][2] = new Muerte();
+        posicion[5][3] = new Muerte();
+        posicion[5][4] = new Vampiro();
+        posicion[5][5] = new HombreLobo();
     }
 
     public ImageIcon getPiezas(int fila, int columna) {
-        return pieza[fila][columna];
+        Piezas p = posicion[fila][columna];
+        if (p == null) {
+            return null;
+        }
+        String ruta = "/Imagenes/" + p.getNombre() + ".png";
+        return new ImageIcon(getClass().getResource(ruta));
     }
 
     public Piezas getPosicion(int fila, int columna) {

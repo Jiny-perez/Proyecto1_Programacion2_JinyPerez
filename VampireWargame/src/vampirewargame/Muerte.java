@@ -106,20 +106,19 @@ public class Muerte extends Piezas {
         }
     }
 
-    public void ataqueZombie(Tablero tablero, int fila, int columna) {
-        Piezas oponente = tablero.getPosicion(fila, columna);
+    public void ataqueZombie(Tablero tablero, int opFila, int opColumna) {
+        Piezas oponente = tablero.getPosicion(opFila, opColumna);
 
         if (oponente == null) {
             JOptionPane.showMessageDialog(null, "Error: No hay enemigos en esa casilla..");
             return;
         }
 
-        Zombie hayZombie = tablero.buscarZombie(fila, columna);
+        Zombie hayZombie = tablero.buscarZombie(opFila, opColumna);
         if (hayZombie != null) {
             hayZombie.ataqueEspecial(tablero, tablero.buscarPieza(hayZombie)[0], tablero.buscarPieza(hayZombie)[1]);
-            JOptionPane.showMessageDialog(null, "Un Zombie ha atacado al enemigo por orden de la Muerte.");
         } else {
-            JOptionPane.showMessageDialog(null, "No hay zombies adyacentes al enemigo para ejecutar el ataque.");
+            JOptionPane.showMessageDialog(null, "Error: No hay zombies adyacentes al enemigo para atacar.");
         }
     }
 }
