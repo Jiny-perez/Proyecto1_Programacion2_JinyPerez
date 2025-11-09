@@ -1,78 +1,123 @@
 package vampirewargame;
 
-import javax.swing.*;
-
 /**
  *
  * @author marye
  */
 class Tablero {
 
-    private Piezas[][] posicion = new Piezas[6][6];
+    private final int fila;
+    private final int columna;
+    private final Piezas[][] casilla;
 
-    public void PosicionPiezas() {
-        posicion[0][0] = new HombreLobo(2);
-        posicion[0][1] = new Vampiro(2);
-        posicion[0][2] = new Muerte(2);
-        posicion[0][3] = new Muerte(2);
-        posicion[0][4] = new Vampiro(2);
-        posicion[0][5] = new HombreLobo(2);
-
-        posicion[5][0] = new HombreLobo(1);
-        posicion[5][1] = new Vampiro(1);
-        posicion[5][2] = new Muerte(1);
-        posicion[5][3] = new Muerte(1);
-        posicion[5][4] = new Vampiro(1);
-        posicion[5][5] = new HombreLobo(1);
+    public Tablero(int fila, int columna) {
+        this.fila = fila;
+        this.columna = columna;
+        this.casilla = new Piezas[fila][columna];
     }
 
-    public ImageIcon getPiezas(int fila, int columna) {
-        Piezas p = posicion[fila][columna];
-        if (p == null) {
+    public boolean estaDentro(int fila, int columna) {
+        return fila >= 0 && fila < 6 && columna >= 0 && columna < 6;
+    }
+
+    public boolean estaVacia(int fila, int columna) {
+        if (!estaDentro(fila, columna)) {
+            return false;
+        }
+        return casilla[fila][columna] == null;
+    }
+
+    public Piezas get(int fila, int columna) {
+        if (!estaDentro(fila, columna)) {
             return null;
         }
-        String ruta = "/Imagenes/"+p.getNombre().replace(" ", "")+p.getJugador()+".png";
-        return new ImageIcon(getClass().getResource(ruta));
+        return casilla[fila][columna];
     }
 
-    public Piezas getPosicion(int fila, int columna) {
-        return posicion[fila][columna];
+    public void colocarPieza(Piezas p, int fila, int columna) {
+        if (!estaDentro(fila, columna)) {
+            return;
+        }
+        casilla[fila][columna] = p;
+        if (p != null) {
+            p.setPosicion(fila, columna);
+        }
     }
 
-    public void setPieza(int fila, int columna, Piezas pieza) {
-        posicion[fila][columna] = pieza;
+    public void eliminarPieza(int fila, int columna) {
+        if (!estaDentro(fila, columna)) {
+            return;
+        }
+        Piezas p = casilla[fila][columna];
+        if (p != null) {
+            p.setPosicion(-1, -1);
+        }
+        casilla[fila][columna] = null;
     }
 
-    public boolean casillaVacia(int fila, int columna) {
-        if (posicion[fila][columna] == null) {
-            return true;
+    public boolean hayEspacio() {
+        for (int i = 0; i < fila; i++) {
+            for (int j = 0; j < columna; j++) {
+                if (casilla[i][j] == null) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-    public int[] buscarPieza(Piezas pieza) {
-        for (int fila = 0; fila < 6; fila++) {
-            for (int columna = 0; columna < 6; columna++) {
-                if (posicion[fila][columna] == pieza) {
-                    return new int[]{fila, columna};
-                }
-            }
-        }
-        return null;
+    public int distanciaMaxima(int f1, int c1, int f2, int c2) {
+        int difFila = Math.abs(f2 - f1);
+        int difCol = Math.abs(c2 - c1);
+        return Math.max(difFila, difCol);
     }
 
-    public Zombie buscarZombie(int fila, int columna) {
-        for (int i = fila - 1; i <= fila + 1; i++) {
-            for (int j = columna - 1; j <= columna + 1; j++) {
-                if (i >= 0 && i < 6 && j >= 0 && j < 6) {
-                    Piezas zombie = getPosicion(i, j);
-                    if (zombie instanceof Zombie) {
-                        return (Zombie) zombie;
-                    }
-                }
-            }
+    public boolean esAdyacente(int f1, int c1, int f2, int c2) {
+        if (!estaDentro(f2, c2)) {
+            return false;
         }
-        return null;
+        int distancia = distanciaMaxima(f1, c1, f2, c2);
+        return distancia == 1;
     }
 
+    public boolean esDistanciaExacta(int f1, int c1, int f2, int c2, int distancia) {
+        if (!estaDentro(f2, c2)) {
+            return false;
+        }
+        int d = distanciaMaxima(f1, c1, f2, c2);
+        return d == distancia;
+    }
+
+    public int validarMovimientoHombreLobo(int f1, int c1, int f2, int c2) {
+        if (!estaDentro(f2, c2)) {
+            return 0;
+        }
+        if (f1 == f2 && c1 == c2) {
+            return 0;
+        }
+        int distFila = f2 - f1;
+        int distCol = c2 - c1;
+        int sdr = Integer.compare(distFila, 0);
+        int sdc = Integer.compare(distCol, 0);
+        int fPrim = f1 + sdr;
+        int cPrim = c1 + sdc;
+        if (fPrim == f2 && cPrim == c2) {
+            if (estaVacia(f2, c2)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        int fSeg = f1 + 2 * sdr;
+        int cSeg = c1 + 2 * sdc;
+        if (fSeg == f2 && cSeg == c2) {
+            if (estaDentro(fPrim, cPrim) && estaVacia(fPrim, cPrim) && estaVacia(fSeg, cSeg)) {
+                return 2;
+            } else {
+                return 0;
+            }
+        }
+        return 0;
+    }
 }
+

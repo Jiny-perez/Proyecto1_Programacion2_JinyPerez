@@ -1,5 +1,4 @@
 package vampirewargame;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -8,27 +7,25 @@ import javax.swing.JOptionPane;
 public class Vampiro extends Piezas {
 
     public Vampiro(int jugador) {
-        super("Vampiro",jugador, 3, 4, 5);
+        super(jugador, 4, 5, 3, "Vampiro");
     }
 
-    public void ataqueEspecial(Tablero tablero, int fila, int columna){
-        Piezas oponente = tablero.getPosicion(fila, columna);
-        
-        if(oponente==null){
-            JOptionPane.showMessageDialog(null, "Error: No hay enemigos en esa casilla.");
-        }
-        
-        if(oponente==this){
-            JOptionPane.showMessageDialog(null, "Error: No puede atacarte a ti mismo.");
-        }
-        
-        oponente.danioOponente(1);
-        this.curacion(1);
-        
-        if(!oponente.vivo()){
-            tablero.setPieza(fila, columna, null);        
+    public void ataqueEspecial(int opcion, Tablero tablero, int fila, int columna) {
+        if (opcion == 1) {
+            Piezas oponente = tablero.get(fila, columna);
+
+            if (oponente != null && oponente.getJugador() != this.getJugador()) {
+                oponente.danio(1);
+                this.curacion(1);
+
+                if (!oponente.estaVivo()) {
+                    tablero.eliminarPieza(fila, columna);
+                }
+            }
         }
     }
 
+    public String realizarAccion(String accion, Tablero tablero) {
+        return "Vampiro: acción no implementada localmente";
+    }
 }
-

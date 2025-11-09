@@ -1,95 +1,80 @@
 package vampirewargame;
 
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author marye
  */
 public abstract class Piezas {
 
-    protected String nombre;
-    protected int jugador;
-    protected int ataque;
+    protected String tipoPieza;
     protected int vida;
     protected int escudo;
+    protected int ataque;
 
-    public Piezas(String nombre, int jugador, int ataque, int vida, int escudo) {
-        this.nombre = nombre;
-        this.jugador=jugador;
-        this.ataque = ataque;
+    protected int jugador;
+    protected int fila;
+    protected int columna;
+
+    public Piezas(int jugador, int vida, int escudo, int ataque, String tipoPieza) {
+        this.jugador = jugador;
         this.vida = vida;
         this.escudo = escudo;
+        this.ataque = ataque;
+        this.tipoPieza = tipoPieza;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-    
-    public int getJugador(){
+    //Get y set de la clase Pieza
+    public int getJugador() {
         return jugador;
     }
 
-    public int getAtaque() {
-        return ataque;
+    public void setJugador(int jugador) {
+        this.jugador = jugador;
+    }
+
+    public int getFila() {
+        return fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+
+    public void setPosicion(int fila, int columna) {
+        this.fila = fila;
+        this.columna = columna;
     }
 
     public int getVida() {
         return vida;
     }
 
-    public int getEscudo() {
-        return escudo;
+    public void setVida(int vida) {
+        this.vida = vida;
     }
 
-    public boolean esAdyacente(int filaDestino, int columnaDestino, int filaActual, int columnaActual) {
-        int distFila = Math.abs(filaDestino - filaActual);
-        int distColumna = Math.abs(columnaDestino - columnaActual);
+    public int getAtaque() {
+        return ataque;
+    }
 
-        if (distFila > 1 || distColumna > 1 || (distFila == 0 && distColumna == 0)) {
-            return false;
+    public void setAtaque(int ataque) {
+        this.ataque = ataque;
+    }
+
+    public String getTipoPieza() {
+        return tipoPieza;
+    }
+
+    public void setTipoPieza(String tipoPieza) {
+        this.tipoPieza = tipoPieza;
+    }
+
+    //Metodos 
+    public void danio(int danio) {
+        if (escudo >= danio) {
+            escudo -= danio;
         } else {
-            return true;
-        }
-    }
-
-    public void movemiento(Tablero tablero, int filaDestino, int columnaDestino) {
-        int[] hayPieza = tablero.buscarPieza(this);
-        int filaActual = hayPieza[0];
-        int columnaActual = hayPieza[1];
-
-        if (hayPieza == null) {
-            JOptionPane.showMessageDialog(null, "Error: No se encontró la pieza en el tablero.");
-            return;
-        }
-
-        if (filaDestino < 0 || filaDestino >= 6 || columnaDestino < 0 || columnaDestino >= 6) {
-            JOptionPane.showMessageDialog(null, "Error: Movimiento invalido.");
-            return;
-        }
-
-        if (!tablero.casillaVacia(filaDestino, columnaDestino)) {
-            JOptionPane.showMessageDialog(null, "Error: La casilla está ocupada.");
-            return;
-        }
-
-        if (!esAdyacente(filaActual, columnaActual, filaDestino, columnaDestino)) {
-            JOptionPane.showMessageDialog(null, "Error: Solo se puede mover a una casilla adyacente.");
-            return;
-        }
-
-        tablero.setPieza(filaDestino, columnaDestino, this);
-        tablero.setPieza(filaActual, columnaActual, null);
-    }
-
-    public abstract void ataqueEspecial(Tablero tablero, int fila, int columna);
-
-    public void danioOponente(int danioOponente) {
-        if (escudo >= danioOponente) {
-            escudo -= danioOponente;
-        } else {
-            int danioRestante = danioOponente - escudo;
+            int danioRestante = danio - escudo;
             escudo = 0;
             vida -= danioRestante;
             if (vida < 0) {
@@ -98,15 +83,31 @@ public abstract class Piezas {
         }
     }
 
-    public void curacion(int vidaAtacante) {
-        vida += vidaAtacante;
+    public void curacion(int vidaRobada) {
+        vida += vidaRobada;
     }
 
-    public final boolean vivo() {
+    public final boolean estaVivo() {
         if (vida > 0) {
             return true;
         } else {
             return false;
         }
     }
+
+    public void ataqueNormal(Piezas oponente) {
+        if (oponente == null) {
+            return;
+        }
+
+        oponente.danio(this.ataque);
+    }
+
+    public void atacar(Piezas objetivo) {
+        ataqueNormal(objetivo);
+    }
+
+    public abstract void ataqueEspecial(int opcion, Tablero tablero, int fila, int columna);
+    public abstract String realizarAccion(String accion, Tablero tablero);
+
 }

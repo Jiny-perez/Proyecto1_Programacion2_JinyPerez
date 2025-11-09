@@ -1,7 +1,5 @@
 package vampirewargame;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author marye
@@ -9,116 +7,103 @@ import javax.swing.JOptionPane;
 public class Muerte extends Piezas {
 
     public Muerte(int jugador) {
-        super("Muerte", jugador, 4, 3, 1);
+        super(jugador, 3, 1, 4, "Muerte");
     }
 
-    public void ataqueEspecial(Tablero tablero, int fila, int columna) {
-        String[] tipoAtaque = {"Lanzar lanza", "Conjurar Zombie", "Ataque Zombie"};
+    public void ataqueEspecial(int opcion, Tablero tablero, int fila, int columna) {
+        int op = opcion;
+        Piezas oponente = tablero.get(fila, columna);
 
-        String ataqueSeleccionda = tipoAtaque[0];
+        // calcular distancia entre la muerte y el oponente
+        int distFila = Math.abs(this.getFila() - fila);
+        int distColumna = Math.abs(this.getColumna() - columna);
+        int distancia = Math.max(distFila, distColumna);
 
-        switch (ataqueSeleccionda) {
-            case "Lanzar lanza":
-                lanzarLanza(tablero, fila, columna);
+        switch (op) {
+            case 1:
+
+                if (!tablero.estaDentro(fila, columna)) {
+                    return;
+                }
+
+                if (oponente == null && oponente.getJugador() == this.getJugador()) {
+                    return;
+                }
+
+                if (distancia == 2) {
+                    oponente.vida -= 2;
+                }
                 break;
-            case "Conjurar Zombie":
-                conjurarZombie(tablero, fila, columna);
+
+            case 2:
+                if (!tablero.estaDentro(fila, columna)) {
+                    return;
+                }
+                if (!tablero.hayEspacio()) {
+                    return;
+                }
+                if (!tablero.estaVacia(fila, columna)) {
+                    return;
+                }
+
+                Zombie zombi = new Zombie(this.getJugador());
+                tablero.colocarPieza(zombi, fila, columna);
                 break;
-            case "Ataque Zombie":
+
+            case 3:
+                if (!tablero.estaDentro(fila, columna)) {
+                    return;
+                }
+
+                if (oponente == null && oponente.getJugador() == this.getJugador()) {
+                    return;
+                }
+                if (distancia <= 2) {
+                    return;
+                }
+
+                boolean zombieAdyacente = false;
+                Zombie atacante = null;
+
+                for (int rx = -1; rx <= 1 && !zombieAdyacente; rx++) {
+                    for (int ry = -1; ry <= 1 && !zombieAdyacente; ry++) {
+                        int nx = fila + rx;
+                        int ny = columna + ry;
+
+                        if (!tablero.estaDentro(nx, ny)) {
+                            continue;
+                        }
+
+                        Piezas p = tablero.get(nx, ny);
+                        if (p != null && p instanceof Zombie && p.getJugador() == this.getJugador()) {
+                            zombieAdyacente = true;
+                            atacante = (Zombie) p;
+                        }
+                    }
+                }
+
+                if (zombieAdyacente && atacante != null) {
+                    oponente.danio(1);
+                }
                 break;
+
             default:
-                System.out.println("Ataque desconocido");
+                if (!tablero.estaDentro(fila, columna)) {
+                    return;
+                }
+                if (oponente != null || oponente.getJugador() != this.getJugador()) {
+                    this.ataqueNormal(oponente);
+                }
                 break;
         }
-    }
-
-    public boolean esAdyacente(int filaDestino, int columnaDestino, int filaActual, int columnaActual) {
-        int distFila = Math.abs(filaDestino - filaActual);
-        int distColumna = Math.abs(columnaDestino - columnaActual);
-
-        if (distFila > 2 || distColumna > 2 || (distFila == 0 && distColumna == 0)) {
-            return false;
-        } else {
-            return true;
+        
+        if (oponente != null && !oponente.estaVivo()) {
+            tablero.eliminarPieza(fila, columna);
         }
     }
 
-    public boolean recorrido(Tablero tablero, int filaActual, int columnaActual, int filaDestino, int columnaDestino) {
-        int dirFila = Integer.compare(filaDestino, filaActual);
-        int dirCol = Integer.compare(columnaDestino, columnaActual);
-
-        int recFila = filaActual + dirFila;
-        int recColumna = columnaActual + dirCol;
-
-        while (recFila != filaDestino || recColumna != columnaDestino) {
-            if (!tablero.casillaVacia(recFila, recColumna)) {
-                return false;
-            }
-            recFila += dirFila;
-            recColumna += dirCol;
-        }
-        return true;
+    public String realizarAccion(String accion, Tablero tablero) {
+        return "Muerte: acción no implementada localmente";
     }
 
-    public void lanzarLanza(Tablero tablero, int filaDestino, int columnaDestino) {
-        int[] hayPieza = tablero.buscarPieza(this);
-        int filaActual = hayPieza[0];
-        int columnaActual = hayPieza[1];
-
-        if (hayPieza == null) {
-            JOptionPane.showMessageDialog(null, "Error: No se encontró la pieza en el tablero.");
-            return;
-        }
-
-        if (!esAdyacente(filaActual, columnaActual, filaDestino, columnaDestino)) {
-            JOptionPane.showMessageDialog(null, "Error: Solo se puede atacar a una casilla a 2 de distancia.");
-            return;
-        }
-
-        if (!recorrido(tablero, filaActual, columnaActual, filaDestino, columnaDestino)) {
-            JOptionPane.showMessageDialog(null, "Error: No puedes atacar pasando sobre otra pieza.");
-            return;
-        }
-
-        Piezas oponente = tablero.getPosicion(filaDestino, columnaDestino);
-
-        if (oponente == null) {
-            JOptionPane.showMessageDialog(null, "Error: No hay enemigo en esa casilla.");
-            return;
-        }
-
-        oponente.vida -= this.ataque / 2;
-        if (oponente.vida < 0) {
-            oponente.vida = 0;
-        }
-
-        if (!oponente.vivo()) {
-            tablero.setPieza(filaDestino, columnaDestino, null);
-        }
-    }
-
-    public void conjurarZombie(Tablero tablero, int fila, int columna) {
-        if (tablero.casillaVacia(fila, columna)) {
-            Piezas zombie = new Zombie(jugador);
-            tablero.setPieza(fila, columna, zombie);
-        } else {
-            JOptionPane.showMessageDialog(null, "Error: Casilla llena");
-        }
-    }
-
-    public void ataqueZombie(Tablero tablero, int opFila, int opColumna) {
-        Piezas oponente = tablero.getPosicion(opFila, opColumna);
-
-        if (oponente == null) {
-            JOptionPane.showMessageDialog(null, "Error: No hay enemigos en esa casilla..");
-            return;
-        }
-
-        Zombie hayZombie = tablero.buscarZombie(opFila, opColumna);
-        if (hayZombie != null) {
-            hayZombie.ataqueEspecial(tablero, tablero.buscarPieza(hayZombie)[0], tablero.buscarPieza(hayZombie)[1]);
-        } else {
-            JOptionPane.showMessageDialog(null, "Error: No hay zombies adyacentes al enemigo para atacar.");
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package MenuInicial;
 
+import MenuPrincipal.MenuPrincipal;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,9 +15,10 @@ public class CrearPlayer {
     private JPasswordField txtPassword;
     private AccountRegistry registro;
     boolean cuentaCreada;
+    private Account cuentaEncontrada;
 
     public CrearPlayer(AccountRegistry registro) {
-        this.registro=registro;
+        this.registro = registro;
         initcomponent();
     }
 
@@ -108,14 +110,16 @@ public class CrearPlayer {
         BtnCrearCuenta.addActionListener(e -> {
             newPlayer();
             if (cuentaCreada) {
-                new MenuInicio(registro);
-                VCrearPlayer.dispose();
+                if (cuentaEncontrada != null) {
+                    new MenuPrincipal(registro, cuentaEncontrada);
+                    VCrearPlayer.dispose();
+                }
             }
         });
-        
-         BtnSalir.addActionListener(e -> {
-                new MenuInicio(registro);
-                VCrearPlayer.dispose();
+
+        BtnSalir.addActionListener(e -> {
+            new MenuInicio(registro);
+            VCrearPlayer.dispose();
         });
 
         PCentral.add(lblTitulo, BorderLayout.NORTH);
@@ -147,5 +151,8 @@ public class CrearPlayer {
         if (cuentaCreada) {
             JOptionPane.showMessageDialog(null, "La cuenta de jugador se ha creado correctamente.");
         }
+        
+         cuentaEncontrada = registro.buscarPlayer(username);
+
     }
 }
