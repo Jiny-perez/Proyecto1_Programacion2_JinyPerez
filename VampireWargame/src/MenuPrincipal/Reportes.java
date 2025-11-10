@@ -43,7 +43,7 @@ public class Reportes {
         PReportes.add(PCentral, BorderLayout.CENTER);
 
         JLabel lblTitulo = new JLabel("REPORTES", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 60));
         lblTitulo.setForeground(amarillo);
         PCentral.add(lblTitulo, BorderLayout.NORTH);
 

@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 import vampirewargame.InterfazJuego;
 
 /**
@@ -78,20 +79,6 @@ public class MenuPrincipal {
         }
 
         BtnJugar.addActionListener(e -> {
-            if (player == null) {
-                JOptionPane.showMessageDialog(null,
-                        "No hay ninguna sesión iniciada. Inicia sesión para jugar.",
-                        "Sin sesión", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (!player.isLoggedIn()) {
-                JOptionPane.showMessageDialog(null,
-                        "Tu cuenta no está marcada como iniciada. Inicia sesión correctamente antes de jugar.",
-                        "Sesión no activa", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
             java.util.List<MenuInicial.Account> todas = registro.listarCuentas();
             java.util.List<MenuInicial.Account> otras = new java.util.ArrayList<>();
 
@@ -108,79 +95,78 @@ public class MenuPrincipal {
             }
 
             if (otras.isEmpty()) {
-                JOptionPane.showMessageDialog(null,
-                        "Se requiere al menos otra cuenta registrada para jugar.\n"
-                        + "Crea o registra otra cuenta y vuelve a intentarlo.",
-                        "No hay otros jugadores", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Registra otro jugador para habilatar la opcion de jugar", "ERROR", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             String[] opciones = new String[otras.size()];
             for (int i = 0; i < otras.size(); i++) {
-                opciones[i] = otras.get(i).getUsername() + (otras.get(i).isLoggedIn() ? " (conectado)" : "");
+                opciones[i] = otras.get(i).getUsername();
+            }
+
+            String elegido = (String) JOptionPane.showInputDialog(
+                    null,"Selecciona con cuál oponente gusta jugar:",
+                    null, JOptionPane.QUESTION_MESSAGE, null,
+                    opciones, opciones[0]);
+
+            if (elegido == null) {
+                return;
             }
 
             int seleccionado = -1;
-            if (opciones.length == 1) {
-                seleccionado = 0;
-                int confirm = JOptionPane.showConfirmDialog(null,
-                        "Se jugará contra: " + opciones[0] + "\n¿Deseas continuar?",
-                        "Confirmar oponente", JOptionPane.YES_NO_OPTION);
-                if (confirm != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            } else {
-                String elegido = (String) JOptionPane.showInputDialog(
-                        null,
-                        "Selecciona con cuál cuenta registrada quieres jugar:",
-                        "Elegir oponente",
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        opciones,
-                        opciones[0]);
-                if (elegido == null) {
-                    return;
-                }
-                for (int i = 0; i < opciones.length; i++) {
-                    if (opciones[i].equals(elegido)) {
-                        seleccionado = i;
-                        break;
-                    }
-                }
-                if (seleccionado < 0) {
-                    JOptionPane.showMessageDialog(null, "No se seleccionó un oponente válido.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+            for (int i = 0; i < opciones.length; i++) {
+                if (Objects.equals(opciones[i], elegido)) {
+                    seleccionado = i;
+                    break;
                 }
             }
-
+            if (seleccionado < 0) {
+                JOptionPane.showMessageDialog(null, "No se seleccionó un oponente válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             MenuInicial.Account oponente = otras.get(seleccionado);
-
             JOptionPane.showMessageDialog(null,
-                    "Iniciando partida entre:\n1) " + player.getUsername() + "\n2) " + oponente.getUsername(),
-                    "Iniciando juego", JOptionPane.INFORMATION_MESSAGE);
-
+                    "Iniciando partida entre:\n " + player.getUsername() + " VS " + oponente.getUsername(),
+                    null, JOptionPane.INFORMATION_MESSAGE);
             new InterfazJuego(player, oponente);
             VMenuPrincipal.dispose();
         });
 
-        BtnMiCuenta.addActionListener(e -> {
+        BtnMiCuenta.addActionListener(e
+                -> {
             new MiCuenta(player, registro);
             VMenuPrincipal.dispose();
-        });
+        }
+        );
 
-        BtnReportes.addActionListener(e -> {
+        BtnReportes.addActionListener(e
+                -> {
             new Reportes(player, registro);
             VMenuPrincipal.dispose();
-        });
+        }
+        );
 
-        BtnLogOut.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "Sesión cerrada");
-            new LogIn(registro);
-            VMenuPrincipal.dispose();
-        });
+        BtnLogOut.addActionListener(e
+                -> {
+            int opcion = JOptionPane.showConfirmDialog(
+                    null,
+                    "¿Estás seguro de que deseas cerrar sesión?",
+                    "Confirmar cierre de sesión",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                new LogIn(registro);
+                VMenuPrincipal.dispose();
+            }
+        }
+        );
 
         PMenuPrincipal.add(PBotones, BorderLayout.CENTER);
+
         VMenuPrincipal.setContentPane(PMenuPrincipal);
+
         VMenuPrincipal.setVisible(true);
     }
 }
