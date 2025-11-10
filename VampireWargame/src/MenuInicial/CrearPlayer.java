@@ -162,7 +162,7 @@ public class CrearPlayer {
     public void newPlayer() {
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
-
+        
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Error: Ingrese un el nombre del usuario.");
             return;
@@ -173,7 +173,7 @@ public class CrearPlayer {
 
         }
 
-        Account acc = new Account(username, password);
+        Account acc = new Account(username, "", password);
         cuentaCreada = registro.agregarPlayer(acc);
 
         if (cuentaCreada) {

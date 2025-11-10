@@ -80,12 +80,34 @@ class Tablero {
         return distancia == 1;
     }
 
-    public boolean esDistanciaExacta(int f1, int c1, int f2, int c2, int distancia) {
-        if (!estaDentro(f2, c2)) {
+    public boolean DistanciaExacta(int f1, int c1, int f2, int c2, int distancia) {
+        if (!estaDentro(f1, c1) || !estaDentro(f2, c2)) {
             return false;
         }
-        int d = distanciaMaxima(f1, c1, f2, c2);
-        return d == distancia;
+
+        int dr = Math.abs(f2 - f1);
+        int dc = Math.abs(c2 - c1);
+
+        if (distancia != 2) {
+            return false;
+        }
+
+        boolean esValido = (dr == 2 && dc == 0) || (dr == 0 && dc == 2) || (dr == 2 && dc == 2);
+        if (!esValido) {
+            return false;
+        }
+
+        int pasoFila = Integer.signum(f2 - f1);
+        int pasoColumna = Integer.signum(c2 - c1);
+
+        int filaIntermedia = f1 + pasoFila;
+        int columnaIntermedia = c1 + pasoColumna;
+
+        if (!estaVacia(filaIntermedia, columnaIntermedia)) {
+            return false;
+        }
+
+        return true;
     }
 
     public int validarMovimientoHombreLobo(int f1, int c1, int f2, int c2) {
@@ -120,4 +142,3 @@ class Tablero {
         return 0;
     }
 }
-

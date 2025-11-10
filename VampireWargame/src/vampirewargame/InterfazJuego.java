@@ -1,7 +1,12 @@
 package vampirewargame;
 
+import MenuInicial.Account;
+import MenuInicial.AccountRegistry;
+import MenuInicial.Log;
+import MenuPrincipal.MenuPrincipal;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,6 +26,8 @@ public class InterfazJuego {
     private JFrame VInterfaz;
     private JLabel Estado;
 
+    private JButton BtnRendirse = null;
+
     private JRadioButton rbMover;
     private JRadioButton rbAtaque;
     private JRadioButton rbEspecial;
@@ -39,12 +46,15 @@ public class InterfazJuego {
     private JButton botonGirarRuleta = null;
     private int intentosRuletaRestantes = 1;
 
-    private MenuInicial.Account jugadorCuenta;   
-    private MenuInicial.Account oponenteCuenta;
+    private Account AccPlayer;
+    private Account AccOponente;
+    private AccountRegistry registro;
 
-    public InterfazJuego(MenuInicial.Account jugadorCuenta, MenuInicial.Account oponenteCuenta) {
-        this.jugadorCuenta = jugadorCuenta;
-        this.oponenteCuenta = oponenteCuenta;
+    public InterfazJuego(Account AccPlayer, Account AccOponente, AccountRegistry registro) {
+        this.AccPlayer = AccPlayer;
+        this.AccOponente = AccOponente;
+        this.registro = registro;
+
         tablero = new Tablero(6, 6);
 
         tablero.colocarPieza(new HombreLobo(2), 0, 0);
@@ -64,8 +74,8 @@ public class InterfazJuego {
         casillas = new JButton[6][6];
 
         try {
-            if (Estado != null && jugadorCuenta != null) {
-                Estado.setText("Jugador actual: " + jugadorCuenta.getUsername());
+            if (Estado != null && AccPlayer != null) {
+                Estado.setText("Jugador actual: " + AccPlayer.getUsername());
             }
         } catch (Exception ignored) {
         }
@@ -77,13 +87,14 @@ public class InterfazJuego {
         //Ventana de la Interfaz
         VInterfaz = new JFrame("Vampire Wargame");
         VInterfaz.setSize(1200, 800);
-        VInterfaz.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VInterfaz.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VInterfaz.setResizable(false);
         VInterfaz.setLayout(new BorderLayout());
         VInterfaz.setLocationRelativeTo(null);
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
-        panelPrincipal.setBackground(new Color(35, 35, 35));
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel PPrincipal = new JPanel(new BorderLayout());
+        PPrincipal.setBackground(new Color(35, 35, 35));
+        PPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Panel del Tablero
         JPanel PTablero = new JPanel(new GridLayout(6, 6, 3, 3));
@@ -306,14 +317,59 @@ public class InterfazJuego {
         PRuletaCentrada.add(PRuleta);
         PRuletaCentrada.add(Box.createHorizontalGlue());
 
+        BtnRendirse = new JButton("RENDIRSE");
+        BtnRendirse.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        BtnRendirse.setBackground(new Color(180, 40, 40));
+        BtnRendirse.setForeground(Color.WHITE);
+        BtnRendirse.setFocusPainted(false);
+        BtnRendirse.setBorderPainted(true);
+        BtnRendirse.setOpaque(true);
+        BtnRendirse.setPreferredSize(new Dimension(300, 48));
+        BtnRendirse.setMaximumSize(new Dimension(320, 54));
+        BtnRendirse.addActionListener(e -> {
+            int opcion = JOptionPane.showConfirmDialog(VInterfaz,
+                    "¿Estás seguro que deseas rendirte? Perderás la partida.",
+                    null,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                handleSurrender();
+                new MenuPrincipal(registro, AccPlayer);
+            }
+        });
+
+        JPanel PBotonRendirse = new JPanel();
+        PBotonRendirse.setOpaque(false);
+        PBotonRendirse.setLayout(new BoxLayout(PBotonRendirse, BoxLayout.X_AXIS));
+        PBotonRendirse.add(Box.createHorizontalGlue());
+        PBotonRendirse.add(BtnRendirse);
+        PBotonRendirse.add(Box.createHorizontalGlue());
+
+        PDerecho.add(PBotonRendirse);
+        PDerecho.add(Box.createVerticalGlue());
+
         PDerecho.add(PRuletaCentrada);
         PDerecho.add(Box.createVerticalGlue());
 
-        panelPrincipal.add(PTablero, BorderLayout.WEST);
-        panelPrincipal.add(PDerecho, BorderLayout.EAST);
-        VInterfaz.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
+        PPrincipal.add(PTablero, BorderLayout.WEST);
+        PPrincipal.add(PDerecho, BorderLayout.EAST);
 
+        PTablero.setPreferredSize(new Dimension(820, 760));
+        PDerecho.setPreferredSize(new Dimension(360, 760));
+        PPrincipal.setPreferredSize(new Dimension(1200, 800));
+        PPrincipal.setMinimumSize(new Dimension(1200, 800));
+        PPrincipal.setMaximumSize(new Dimension(1200, 800));
+
+        VInterfaz.setContentPane(PPrincipal);
+
+        Dimension dimen = new Dimension(1200, 800);
         VInterfaz.pack();
+        VInterfaz.setSize(dimen);
+        VInterfaz.setMinimumSize(dimen);
+        VInterfaz.setMaximumSize(dimen);
+        VInterfaz.setResizable(false);
+
         VInterfaz.setLocationRelativeTo(null);
         VInterfaz.setVisible(true);
 
@@ -505,6 +561,8 @@ public class InterfazJuego {
 
         waitingResetEstado();
         actualizarEstado();
+        verificarTotalPiezas();
+
     }
 
     private void waitingResetEstado() {
@@ -617,6 +675,7 @@ public class InterfazJuego {
                 } catch (Exception ignored) {
                 }
                 tablero.eliminarPieza(filaDestino, columnaDestino);
+                verificarTotalPiezas();
             }
             return true;
         } catch (Exception e) {
@@ -657,6 +716,7 @@ public class InterfazJuego {
                 Piezas p = tablero.get(filaDestino, columnaDestino);
                 if (p != null && !p.estaVivo()) {
                     tablero.eliminarPieza(filaDestino, columnaDestino);
+                    verificarTotalPiezas();
                 }
                 return true;
             } catch (Exception e) {
@@ -701,7 +761,8 @@ public class InterfazJuego {
             try {
                 piezaSeleccionada.ataqueEspecial(1, tablero, filaDestino, columnaDestino);
                 if (!objetivo.estaVivo()) {
-                    tablero.eliminarPieza(filaDestino, columnaDestino);
+                    tablero.eliminarPieza(filaDestino, columnaDestino); 
+                    verificarTotalPiezas();
                 }
                 return true;
             } catch (Exception e) {
@@ -729,12 +790,13 @@ public class InterfazJuego {
                     piezaSeleccionada.ataqueEspecial(opcion, tablero, filaDestino, columnaDestino);
                     Piezas posible = tablero.get(filaDestino, columnaDestino);
                     if (posible != null && !posible.estaVivo()) {
-                        tablero.eliminarPieza(filaDestino, columnaDestino);
+                        tablero.eliminarPieza(filaDestino, columnaDestino); 
+                        verificarTotalPiezas();
                     }
                     return true;
                 }
 
-                if (!tablero.esDistanciaExacta(filaSeleccionada, columnaSeleccionada, filaDestino, columnaDestino, 2)) {
+                if (!tablero.DistanciaExacta(filaSeleccionada, columnaSeleccionada, filaDestino, columnaDestino, 2)) {
                     return false;
                 }
 
@@ -742,6 +804,7 @@ public class InterfazJuego {
                 if (objetivo == null) {
                     return false;
                 }
+
                 try {
                     if (objetivo.getJugador() == piezaSeleccionada.getJugador()) {
                         return false;
@@ -753,6 +816,7 @@ public class InterfazJuego {
                 piezaSeleccionada.ataqueEspecial(1, tablero, filaDestino, columnaDestino);
                 if (!objetivo.estaVivo()) {
                     tablero.eliminarPieza(filaDestino, columnaDestino);
+                    verificarTotalPiezas(); 
                 }
                 return true;
             } catch (Exception e) {
@@ -763,17 +827,13 @@ public class InterfazJuego {
         if (!tablero.esAdyacente(filaSeleccionada, columnaSeleccionada, filaDestino, columnaDestino)) {
             return false;
         }
-        try {
-            piezaSeleccionada.ataqueEspecial(1, tablero, filaDestino, columnaDestino);
-            Piezas p = tablero.get(filaDestino, columnaDestino);
-            if (p != null && !p.estaVivo()) {
-                tablero.eliminarPieza(filaDestino, columnaDestino);
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
 
+        piezaSeleccionada.ataqueEspecial(1, tablero, filaDestino, columnaDestino);
+        Piezas p = tablero.get(filaDestino, columnaDestino);
+        if (p != null && !p.estaVivo()) {
+            tablero.eliminarPieza(filaDestino, columnaDestino);
+        }
+        return true;
     }
 
     private void marcarCasillas() {
@@ -957,10 +1017,9 @@ public class InterfazJuego {
                                 continue;
                             }
 
-                            if (!tablero.esDistanciaExacta(filaSeleccionada, columnaSeleccionada, nf, nc, 2)) {
+                            if (!tablero.DistanciaExacta(filaSeleccionada, columnaSeleccionada, nf, nc, 2)) {
                                 continue;
                             }
-
                             Piezas p = tablero.get(nf, nc);
                             try {
                                 if (p != null && p.getJugador() != piezaSeleccionada.getJugador()) {
@@ -1155,6 +1214,7 @@ public class InterfazJuego {
             atacante.atacar(objetivo);
             if (!objetivo.estaVivo()) {
                 tablero.eliminarPieza(filaObj, colObj);
+                verificarTotalPiezas();
             }
             return true;
         } catch (Exception ignored) {
@@ -1162,4 +1222,91 @@ public class InterfazJuego {
         }
     }
 
+    private MenuInicial.Account accountForJugador(int num) {
+        return num == 1 ? AccPlayer : AccOponente;
+    }
+
+    private int contarPiezasJugador(int numJugador) {
+        int count = 0;
+        for (int f = 0; f < 6; f++) {
+            for (int c = 0; c < 6; c++) {
+                Piezas p = tablero.get(f, c);
+                try {
+                    if (p != null && p.getJugador() == numJugador) {
+                        count++;
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return count;
+    }
+
+    private void handleSurrender() {
+        int jugadorActual;
+        try {
+            jugadorActual = logica.getJugadorActual();
+        } catch (Exception e) {
+            jugadorActual = 1;
+        }
+        MenuInicial.Account rendido = accountForJugador(jugadorActual);
+        MenuInicial.Account ganador = accountForJugador(jugadorActual == 1 ? 2 : 1);
+
+        try {
+            ganador.setPuntosAcumulados(ganador.getPuntosAcumulados() + 3);
+            ganador.agregarRegistro(new Log(ganador.getUsername(), "Ganó por rendición contra " + rendido.getUsername()));
+        } catch (Exception ignored) {
+        }
+        try {
+            rendido.agregarRegistro(new Log(rendido.getUsername(), "Se rindió ante " + ganador.getUsername()));
+        } catch (Exception ignored) {
+        }
+
+        JOptionPane.showMessageDialog(VInterfaz,
+                "El jugador '" + rendido.getUsername() + "' se rindió.\n"
+                + "Ganador: " + ganador.getUsername() + " (+3 puntos).",
+                "null",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        VInterfaz.dispose();
+    }
+
+    private void finalizarPartida(int ganadorNum, int perdedorNum, String motivo) {
+        MenuInicial.Account ganador = accountForJugador(ganadorNum);
+        MenuInicial.Account perdedor = accountForJugador(perdedorNum);
+        try {
+            ganador.setPuntosAcumulados(ganador.getPuntosAcumulados() + 3);
+            ganador.agregarRegistro(new Log(ganador.getUsername(), "Ganó la partida: " + motivo));
+        } catch (Exception ignored) {
+        }
+        try {
+            perdedor.agregarRegistro(new Log(perdedor.getUsername(), "Perdió la partida: " + motivo));
+        } catch (Exception ignored) {
+        }
+
+        JOptionPane.showMessageDialog(VInterfaz,
+                "Partida finalizada.\nGanador: " + ganador.getUsername() + " (+3 puntos).\nMotivo: " + motivo,
+                "Fin de partida",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        VInterfaz.dispose();
+    }
+
+    private void verificarTotalPiezas() {
+        int player1 = contarPiezasJugador(1);
+        int player2 = contarPiezasJugador(2);
+        if (player1 == 0 && player2 == 0) {
+            JOptionPane.showMessageDialog(VInterfaz,
+                    "Ambos jugadores se quedaron sin piezas. Empate.",
+                    null,
+                    JOptionPane.INFORMATION_MESSAGE);
+            VInterfaz.dispose();
+            return;
+        }
+        if (player1 == 0) {
+            finalizarPartida(2, 1, "Se quedó sin piezas");
+        } else if (player2 == 0) {
+            finalizarPartida(1, 2, "Se quedó sin piezas");
+        }
+    }
 }

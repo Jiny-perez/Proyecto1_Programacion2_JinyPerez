@@ -8,19 +8,19 @@ import java.util.Calendar;
  */
 public class Log {
 
-    private String player;
+    private String username;
     private String descripcion;
     private Calendar fecha;
 
-    public Log(String player, String descripcion) {
-        this.player = player;
+    public Log(String username, String descripcion) {
+        this.username = username;
         this.descripcion = descripcion;
-        this.fecha=fecha;
+        this.fecha=Calendar.getInstance();
 
     }
 
-    public String getPlayer() {
-        return player;
+    public String getUsername() {
+        return username;
     }
 
     public String getDescripcion() {

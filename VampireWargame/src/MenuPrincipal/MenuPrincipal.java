@@ -128,7 +128,7 @@ public class MenuPrincipal {
             JOptionPane.showMessageDialog(null,
                     "Iniciando partida entre:\n " + player.getUsername() + " VS " + oponente.getUsername(),
                     null, JOptionPane.INFORMATION_MESSAGE);
-            new InterfazJuego(player, oponente);
+            new InterfazJuego(player, oponente, registro);
             VMenuPrincipal.dispose();
         });
 

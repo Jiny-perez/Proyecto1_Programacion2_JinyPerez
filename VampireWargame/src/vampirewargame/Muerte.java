@@ -14,18 +14,12 @@ public class Muerte extends Piezas {
         int op = opcion;
         Piezas oponente = tablero.get(fila, columna);
 
-        // calcular distancia entre la muerte y el oponente
         int distFila = Math.abs(this.getFila() - fila);
         int distColumna = Math.abs(this.getColumna() - columna);
         int distancia = Math.max(distFila, distColumna);
 
         switch (op) {
             case 1:
-
-                if (!tablero.estaDentro(fila, columna)) {
-                    return;
-                }
-
                 if (oponente == null && oponente.getJugador() == this.getJugador()) {
                     return;
                 }

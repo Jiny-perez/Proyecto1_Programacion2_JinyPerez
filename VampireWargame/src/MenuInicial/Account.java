@@ -8,27 +8,22 @@ import javax.swing.JOptionPane;
  *
  * @author marye
  */
-public class Account {
+public class Account extends Log{
 
-    private String username;
-    private String password;
+   private String password;
     private int puntosAcumulados;
     private Calendar fechaIngreso;
     private boolean activo;
     private ArrayList<Log> partidas;
     private boolean SeccionIniciada;
 
-    public Account(String username, String password) {
-        this.username = username;
+    public Account(String username, String descripcion, String password) {
+        super(username, descripcion);
         this.password = password;
         this.puntosAcumulados = 0;
         this.fechaIngreso = Calendar.getInstance();
         this.activo = true;
         this.partidas = new ArrayList<>();
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getPassword() {
@@ -119,7 +114,8 @@ public class Account {
             return;
         }
 
-        System.out.println("Usuario: " + username);
+        String username=super.getUsername();
+        System.out.println("Usuario: " + username );
         System.out.println("Puntos: " + puntosAcumulados);
         System.out.println("Fecha de ingreso: " + fechaIngreso);
     }
