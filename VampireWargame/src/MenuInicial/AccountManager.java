@@ -15,5 +15,7 @@ public interface AccountManager {
     boolean eliminarPlayer(String username);
 
     List<Account> rankingPlayers();
+    
+    public List<Account> obtenerCuentasIniciadas();
 }
 

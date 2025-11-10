@@ -46,7 +46,7 @@ public class LogIn {
         PCentral.setLocation((1200 - 650) / 2, (800 - 460) / 2 + 75);
         PCentral.setOpaque(true);
 
-        JLabel lblTitulo = new JLabel("Iniciar Sesión", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("INICIAR SESIÓN", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
         lblTitulo.setForeground(amarillo);
 

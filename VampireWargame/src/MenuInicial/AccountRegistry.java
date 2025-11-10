@@ -16,7 +16,6 @@ public class AccountRegistry implements AccountManager {
         player = new ArrayList<>();
     }
 
-    @Override
     public boolean agregarPlayer(Account acc) {
         try {
             for (int i = 0; i < player.size(); i++) {
@@ -51,7 +50,6 @@ public class AccountRegistry implements AccountManager {
         }
     }
 
-    @Override
     public Account buscarPlayer(String username) {
         try {
             for (int i = 0; i < player.size(); i++) {
@@ -66,7 +64,6 @@ public class AccountRegistry implements AccountManager {
         }
     }
 
-    @Override
     public boolean eliminarPlayer(String username) {
         try {
             Account playerEncontrado = buscarPlayer(username);
@@ -81,7 +78,6 @@ public class AccountRegistry implements AccountManager {
         }
     }
 
-    @Override
     public List<Account> rankingPlayers() {
         try {
             if (player.isEmpty()) {

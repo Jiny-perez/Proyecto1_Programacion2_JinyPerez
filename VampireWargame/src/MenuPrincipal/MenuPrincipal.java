@@ -30,16 +30,17 @@ public class MenuPrincipal {
     public void inticomponent() {
         JFrame VMenuPrincipal = new JFrame("Menu Inicial");
         VMenuPrincipal.setSize(1200, 800);
-        VMenuPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VMenuPrincipal.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VMenuPrincipal.setResizable(false);
         VMenuPrincipal.setLayout(new BorderLayout());
         VMenuPrincipal.setLocationRelativeTo(null);
 
-        Panel PMenuPrincipal = new Panel("/Imagenes/BgMenuInicial.png");
+        Panel PMenuPrincipal = new Panel("/Imagenes/BMenuPrincipal.png");
         PMenuPrincipal.setLayout(new BorderLayout());
 
-        JPanel PBotones = new JPanel(new GridLayout(4, 1, 0, 50));
-        PBotones.setBorder(BorderFactory.createEmptyBorder(250, 250, 50, 250));
+        JPanel PBotones = new JPanel(new GridLayout(4, 1, 0, 30));
+        PBotones.setOpaque(false);
+        PBotones.setBorder(BorderFactory.createEmptyBorder(350, 350, 100, 300));
 
         JButton BtnJugar = new JButton("JUGAR VAMPIRE WARGAME");
         JButton BtnMiCuenta = new JButton("MI CUENTA");

@@ -31,8 +31,8 @@ public class CrearPlayer {
         VCrearPlayer.setLocationRelativeTo(null);
         VCrearPlayer.setLayout(null);
 
-        Panel PPrincipal = new Panel("/Imagenes/BgMenu.png");
-        PPrincipal.setBounds(0, 0, 1186, 765);
+        Panel PCrearPlayer = new Panel("/Imagenes/BgMenu.png");
+        PCrearPlayer.setBounds(0, 0, 1186, 765);
 
         Color amarillo = new Color(189, 100, 21);
 
@@ -47,7 +47,7 @@ public class CrearPlayer {
         PCentral.setLocation((1200 - 650) / 2, (800 - 460) / 2 + 75);
         PCentral.setOpaque(true);
 
-        JLabel lblTitulo = new JLabel("Crear Cuenta", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("CREAR CUENTA", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
         lblTitulo.setForeground(amarillo);
 
@@ -91,7 +91,7 @@ public class CrearPlayer {
         PDatos.add(new JLabel(""));
         final char ocultar = txtPassword.getEchoChar();
         chkMostrarContra.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.DESELECTED) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
                 txtPassword.setEchoChar((char) 0);
             } else {
                 txtPassword.setEchoChar(ocultar);
@@ -146,11 +146,11 @@ public class CrearPlayer {
         PCentral.add(PDatos, BorderLayout.CENTER);
         PCentral.add(PBotones, BorderLayout.SOUTH);
 
-        VCrearPlayer.add(PPrincipal);
+        VCrearPlayer.add(PCrearPlayer);
         VCrearPlayer.add(PCentral);
 
         VCrearPlayer.getContentPane().setComponentZOrder(PCentral, 0);
-        VCrearPlayer.getContentPane().setComponentZOrder(PPrincipal, 1);
+        VCrearPlayer.getContentPane().setComponentZOrder(PCrearPlayer, 1);
 
         VCrearPlayer.validate();
         VCrearPlayer.repaint();

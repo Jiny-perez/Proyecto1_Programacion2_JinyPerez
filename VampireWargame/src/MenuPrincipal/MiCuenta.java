@@ -1,5 +1,6 @@
 package MenuPrincipal;
 
+import Imagenes.Panel;
 import MenuInicial.Account;
 import MenuInicial.AccountRegistry;
 import MenuInicial.MenuInicio;
@@ -21,83 +22,83 @@ public class MiCuenta {
     }
 
     private void initComponents() {
-        // Ventana principal
         JFrame VMiCuenta = new JFrame();
         VMiCuenta.setSize(1200, 800);
-        VMiCuenta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VMiCuenta.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VMiCuenta.setResizable(false);
-        VMiCuenta.setLayout(new BorderLayout());
         VMiCuenta.setLocationRelativeTo(null);
+        VMiCuenta.setLayout(null);
 
-        // Ventana principal
-        JPanel PMiCuenta = new JPanel(new GridBagLayout());
+        Panel PMiCuenta = new Panel("/Imagenes/BgMenu.png");
+        PMiCuenta.setBounds(0, 0, 1186, 765);
 
-        // Color base
-        Color Azul = new Color(70, 130, 180);
+        Color amarillo = new Color(189, 100, 21);
 
-        // Panel central
-        JPanel PCentral = new JPanel(new BorderLayout(0, 30));
+        JPanel PCentral = new JPanel(new BorderLayout(0, 40));
         PCentral.setBackground(Color.WHITE);
-        PCentral.setPreferredSize(new Dimension(700, 400));
         PCentral.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 5),
+                BorderFactory.createLineBorder(amarillo, 5),
                 BorderFactory.createEmptyBorder(40, 60, 40, 60)
         ));
 
-        // Titulo
-        JLabel lblTitulo = new JLabel("Mi Cuenta", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
-        lblTitulo.setForeground(Azul);
+        PCentral.setSize(650, 440);
+        PCentral.setLocation((1200 - 650) / 2, (800 - 460) / 2 + 75);
+        PCentral.setOpaque(true);
 
-        // Panel de datos del jugador
+        JLabel lblTitulo = new JLabel("MI CUENTA", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
+        lblTitulo.setForeground(amarillo);
+
         JPanel PDatos = new JPanel(new GridLayout(2, 2, 10, 20));
         PDatos.setBackground(Color.WHITE);
 
         JLabel lblUsuarioText = new JLabel("USUARIO:");
         lblUsuarioText.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblUsuarioText.setForeground(Azul);
+        lblUsuarioText.setForeground(amarillo);
         PDatos.add(lblUsuarioText);
 
         lblUsername = new JLabel(player.getUsername());
         lblUsername.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblUsername.setForeground(new Color(60, 70, 100));
+        lblUsername.setForeground(amarillo);
         PDatos.add(lblUsername);
 
         JLabel lblPuntosText = new JLabel("PUNTOS:");
         lblPuntosText.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblPuntosText.setForeground(Azul);
+        lblPuntosText.setForeground(amarillo);
         PDatos.add(lblPuntosText);
 
         lblPuntos = new JLabel(String.valueOf(player.getPuntosAcumulados()));
         lblPuntos.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblPuntos.setForeground(new Color(60, 70, 100));
+        lblPuntos.setForeground(amarillo);
         PDatos.add(lblPuntos);
 
-        // Panel de botones
-        JPanel PBotones = new JPanel(new GridLayout(2, 1, 30, 30));
+        JPanel PBotones = new JPanel(new GridLayout(3, 1, 5, 10));
         PBotones.setBackground(Color.WHITE);
 
         JButton BtnCambiarPassword = new JButton("CAMBIAR CONTRASEÑA");
         JButton BtnEliminarCuenta = new JButton("ELIMINAR CUENTA");
-        JButton BtnSalir = new JButton("Salir");
+        JButton BtnSalir = new JButton("SALIR");
 
-        JButton[] botones = {BtnCambiarPassword, BtnEliminarCuenta, BtnSalir };
+        JButton[] botones = {BtnCambiarPassword, BtnEliminarCuenta, BtnSalir};
 
         for (JButton b : botones) {
-            b.setFont(new Font("Segoe UI", Font.BOLD, 20));
-            b.setBackground(Azul);
+            b.setFont(new Font("Segoe UI", Font.BOLD, 30));
+            b.setBackground(amarillo);
             b.setForeground(Color.WHITE);
             b.setFocusPainted(false);
-            b.setPreferredSize(new Dimension(300, 50));
+            b.setContentAreaFilled(true);
+            b.setOpaque(true);
+
+            b.setBorder(BorderFactory.createLineBorder(amarillo, 2));
             PBotones.add(b);
 
             b.addMouseListener(new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
-                    b.setBackground(Azul.darker());
+                    b.setBackground(amarillo.darker());
                 }
 
                 public void mouseExited(MouseEvent e) {
-                    b.setBackground(Azul);
+                    b.setBackground(amarillo.brighter());
                 }
             });
         }
@@ -113,18 +114,24 @@ public class MiCuenta {
                 new MenuInicio(registro);
             }
         });
-        
-         BtnSalir.addActionListener(e -> {
-                new MenuPrincipal(registro, player);
-                VMiCuenta.dispose();
+
+        BtnSalir.addActionListener(e -> {
+            new MenuPrincipal(registro, player);
+            VMiCuenta.dispose();
         });
 
         PCentral.add(lblTitulo, BorderLayout.NORTH);
         PCentral.add(PDatos, BorderLayout.CENTER);
         PCentral.add(PBotones, BorderLayout.SOUTH);
 
-        PMiCuenta.add(PCentral);
         VMiCuenta.add(PMiCuenta);
+        VMiCuenta.add(PCentral);
+
+        VMiCuenta.getContentPane().setComponentZOrder(PCentral, 0);
+        VMiCuenta.getContentPane().setComponentZOrder(PMiCuenta, 1);
+
+        VMiCuenta.validate();
+        VMiCuenta.repaint();
         VMiCuenta.setVisible(true);
     }
 
