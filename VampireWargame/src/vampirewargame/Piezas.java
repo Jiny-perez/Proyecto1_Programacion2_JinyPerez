@@ -107,6 +107,7 @@ public abstract class Piezas {
         ataqueNormal(objetivo);
     }
 
+    //Funciones abstractas
     public abstract void ataqueEspecial(int opcion, Tablero tablero, int fila, int columna);
     public abstract String realizarAccion(String accion, Tablero tablero);
 

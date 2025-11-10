@@ -13,7 +13,7 @@ public class AccountRegistry implements AccountManager {
     private ArrayList<Account> player;
 
     public AccountRegistry() {
-         player = new ArrayList<>();
+        player = new ArrayList<>();
     }
 
     @Override
@@ -96,5 +96,22 @@ public class AccountRegistry implements AccountManager {
             return new ArrayList<>();
         }
     }
-}
 
+    public int totalRegistro() {
+        return player.size();
+    }
+
+    public List<Account> obtenerCuentasIniciadas() {
+        List<Account> registro = new ArrayList<>();
+        for (Account acc : player) {
+            if (acc != null && acc.isLoggedIn()) {
+                registro.add(acc);
+            }
+        }
+        return registro;
+    }
+
+    public List<Account> listarCuentas() {
+        return new ArrayList<>(player);
+    }
+}

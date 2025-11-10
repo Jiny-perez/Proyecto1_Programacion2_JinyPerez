@@ -1,4 +1,5 @@
 package MenuInicial;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
@@ -15,6 +16,7 @@ public class Account {
     private Calendar fechaIngreso;
     private boolean activo;
     private ArrayList<Log> partidas;
+    private boolean SeccionIniciada;
 
     public Account(String username, String password) {
         this.username = username;
@@ -57,6 +59,18 @@ public class Account {
         return partidas;
     }
 
+    public boolean isLoggedIn() {
+        return SeccionIniciada;
+    }
+
+    public void logIn() {
+        if (!activo) {
+            return;
+        }
+        
+        SeccionIniciada = true;
+    }
+
     public boolean cambiarPassword(String actualPassword, String newPassword) {
         try {
             if (!activo) {
@@ -92,12 +106,12 @@ public class Account {
         if (!activo) {
             return;
         }
-
         activo = false;
+        SeccionIniciada = false;
     }
 
-    public void agregarLog(Log l) {
-        partidas.add(0, l);
+    public void agregarRegistro(Log registro) {
+        partidas.add(0, registro);
     }
 
     public void printDatos() {
@@ -110,4 +124,3 @@ public class Account {
         System.out.println("Fecha de ingreso: " + fechaIngreso);
     }
 }
-

@@ -1,5 +1,6 @@
 package MenuInicial;
 
+import Imagenes.Panel;
 import MenuPrincipal.MenuPrincipal;
 import javax.swing.*;
 import java.awt.*;
@@ -23,97 +24,116 @@ public class CrearPlayer {
     }
 
     public void initcomponent() {
-        //Ventana principal -  Crear Player
-        JFrame VCrearPlayer = new JFrame("Menu Inicial");
+        JFrame VCrearPlayer = new JFrame();
         VCrearPlayer.setSize(1200, 800);
-        VCrearPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VCrearPlayer.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VCrearPlayer.setResizable(false);
         VCrearPlayer.setLocationRelativeTo(null);
+        VCrearPlayer.setLayout(null);
 
-        //Panel principal 
-        JPanel PCrearPlayer = new JPanel(new GridBagLayout());
+        Panel PPrincipal = new Panel("/Imagenes/BgMenu.png");
+        PPrincipal.setBounds(0, 0, 1186, 765);
 
-        //Color base
-        Color Azul = new Color(70, 130, 180);
+        Color amarillo = new Color(189, 100, 21);
 
-        //Panel Central -  Contenido: Titulo
         JPanel PCentral = new JPanel(new BorderLayout(0, 40));
         PCentral.setBackground(Color.WHITE);
-        PCentral.setPreferredSize(new Dimension(600, 500));
         PCentral.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 5),
+                BorderFactory.createLineBorder(amarillo, 5),
                 BorderFactory.createEmptyBorder(40, 60, 40, 60)
         ));
 
+        PCentral.setSize(650, 440);
+        PCentral.setLocation((1200 - 650) / 2, (800 - 460) / 2 + 75);
+        PCentral.setOpaque(true);
+
         JLabel lblTitulo = new JLabel("Crear Cuenta", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
-        lblTitulo.setForeground(Azul);
+        lblTitulo.setForeground(amarillo);
 
-        //Panel Datos -  Contenido: Datos del usuario
-        JPanel PDatos = new JPanel(new GridLayout(2, 2, 5, 40));
+        JPanel PDatos = new JPanel(new GridLayout(3, 2, 50, 10));
         PDatos.setBackground(Color.WHITE);
 
         JLabel lblUsername = new JLabel("USUARIO:");
-        lblUsername.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblUsername.setForeground(Azul);
+        lblUsername.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblUsername.setForeground(amarillo);
         PDatos.add(lblUsername);
 
         txtUsername = new JTextField();
         txtUsername.setFont(new Font("Segoe UI", Font.BOLD, 20));
         txtUsername.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 3),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                BorderFactory.createLineBorder(amarillo, 3),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        txtUsername.setForeground(new Color(60, 70, 100));
+        txtUsername.setForeground(amarillo);
         PDatos.add(txtUsername);
 
         JLabel lblPassword = new JLabel("CONTRASEÑA:");
-        lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblPassword.setForeground(Azul);
+        lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblPassword.setForeground(amarillo);
         PDatos.add(lblPassword);
 
         txtPassword = new JPasswordField();
         txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         txtPassword.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 3),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                BorderFactory.createLineBorder(amarillo, 3),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         PDatos.add(txtPassword);
 
-        //Panel de Botones 
-        JPanel PBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 30));
+        JCheckBox chkMostrarContra = new JCheckBox("Ver contraseña");
+        chkMostrarContra.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        chkMostrarContra.setForeground(amarillo);
+        chkMostrarContra.setBackground(Color.WHITE);
+        chkMostrarContra.setFocusPainted(false);
+        chkMostrarContra.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        PDatos.add(new JLabel(""));
+        final char ocultar = txtPassword.getEchoChar();
+        chkMostrarContra.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                txtPassword.setEchoChar((char) 0);
+            } else {
+                txtPassword.setEchoChar(ocultar);
+            }
+            txtPassword.setFont(new Font("Segoe UI", Font.BOLD, 26));
+            txtPassword.setForeground(amarillo);
+        });
+        PDatos.add(chkMostrarContra);
+
+        JPanel PBotones = new JPanel(new GridLayout(1, 2, 10, 30));
         PBotones.setBackground(Color.WHITE);
-
         JButton BtnCrearCuenta = new JButton("CREAR JUGADOR");
-        JButton BtnSalir = new JButton("Salir");
-
+        JButton BtnSalir = new JButton("SALIR");
         JButton[] botones = {BtnCrearCuenta, BtnSalir};
 
         for (JButton b : botones) {
             b.setFont(new Font("Segoe UI", Font.BOLD, 30));
-            b.setBackground(Azul);
+            b.setBackground(amarillo);
             b.setForeground(Color.WHITE);
             b.setFocusPainted(false);
+            b.setContentAreaFilled(true);
+            b.setOpaque(true);
+
+            b.setBorder(BorderFactory.createLineBorder(amarillo, 2));
             PBotones.add(b);
 
             b.addMouseListener(new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
-                    b.setBackground(Azul.darker());
+                    b.setBackground(amarillo.darker());
                 }
 
                 public void mouseExited(MouseEvent e) {
-                    b.setBackground(Azul);
+                    b.setBackground(amarillo.brighter());
                 }
             });
         }
 
         BtnCrearCuenta.addActionListener(e -> {
             newPlayer();
-            if (cuentaCreada) {
-                if (cuentaEncontrada != null) {
-                    new MenuPrincipal(registro, cuentaEncontrada);
-                    VCrearPlayer.dispose();
-                }
+            if (cuentaCreada && cuentaEncontrada != null) {
+                new MenuPrincipal(registro, cuentaEncontrada);
+                VCrearPlayer.dispose();
             }
         });
 
@@ -126,8 +146,14 @@ public class CrearPlayer {
         PCentral.add(PDatos, BorderLayout.CENTER);
         PCentral.add(PBotones, BorderLayout.SOUTH);
 
-        PCrearPlayer.add(PCentral);
-        VCrearPlayer.add(PCrearPlayer);
+        VCrearPlayer.add(PPrincipal);
+        VCrearPlayer.add(PCentral);
+
+        VCrearPlayer.getContentPane().setComponentZOrder(PCentral, 0);
+        VCrearPlayer.getContentPane().setComponentZOrder(PPrincipal, 1);
+
+        VCrearPlayer.validate();
+        VCrearPlayer.repaint();
         VCrearPlayer.setVisible(true);
     }
 
@@ -149,10 +175,21 @@ public class CrearPlayer {
         cuentaCreada = registro.agregarPlayer(acc);
 
         if (cuentaCreada) {
-            JOptionPane.showMessageDialog(null, "La cuenta de jugador se ha creado correctamente.");
-        }
-        
-         cuentaEncontrada = registro.buscarPlayer(username);
+            acc.logIn();
 
+            cuentaEncontrada = registro.buscarPlayer(username);
+            if (cuentaEncontrada != null && !cuentaEncontrada.isLoggedIn()) {
+                cuentaEncontrada.logIn();
+            }
+
+            JOptionPane.showMessageDialog(null, "La cuenta de jugador se ha creado correctamente.");
+
+            if (cuentaEncontrada != null) {
+                new MenuPrincipal(registro, cuentaEncontrada);
+
+            }
+        } else {
+            cuentaEncontrada = null;
+        }
     }
 }

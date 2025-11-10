@@ -22,7 +22,7 @@ public class MiCuenta {
 
     private void initComponents() {
         // Ventana principal
-        JFrame VMiCuenta = new JFrame("Mi Cuenta");
+        JFrame VMiCuenta = new JFrame();
         VMiCuenta.setSize(1200, 800);
         VMiCuenta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         VMiCuenta.setResizable(false);

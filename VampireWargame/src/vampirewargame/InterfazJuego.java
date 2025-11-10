@@ -39,7 +39,12 @@ public class InterfazJuego {
     private JButton botonGirarRuleta = null;
     private int intentosRuletaRestantes = 1;
 
-    public InterfazJuego() {
+    private MenuInicial.Account jugadorCuenta;   
+    private MenuInicial.Account oponenteCuenta;
+
+    public InterfazJuego(MenuInicial.Account jugadorCuenta, MenuInicial.Account oponenteCuenta) {
+        this.jugadorCuenta = jugadorCuenta;
+        this.oponenteCuenta = oponenteCuenta;
         tablero = new Tablero(6, 6);
 
         tablero.colocarPieza(new HombreLobo(2), 0, 0);
@@ -59,9 +64,10 @@ public class InterfazJuego {
         casillas = new JButton[6][6];
 
         try {
-            intentosRuletaRestantes = logica.calcularIntentosExtra(logica.getJugadorActual());
+            if (Estado != null && jugadorCuenta != null) {
+                Estado.setText("Jugador actual: " + jugadorCuenta.getUsername());
+            }
         } catch (Exception ignored) {
-            intentosRuletaRestantes = 1;
         }
 
         initComponents();
@@ -253,17 +259,15 @@ public class InterfazJuego {
                     }
 
                     if (tieneTipo) {
-                        // Éxito: asignar pieza permitida y finalizar la fase de ruleta
                         logica.setPiezaPermitida(tipo, jugadorActual);
                         ruletaGiradoThisTurn = true;
                         if (botonGirarRuleta != null) {
                             botonGirarRuleta.setEnabled(false);
                         }
-                        Estado.setText("Jugador actual: " + jugadorActual + " (pieza: " + tipo + ")");
+                        Estado.setText("Jugador actual: " + jugadorActual);
                         marcarCasillas();
                         return;
                     } else {
-                        // Falló en este intento: descontar intento
                         intentosRuletaRestantes = Math.max(0, intentosRuletaRestantes - 1);
                         if (intentosRuletaRestantes > 0) {
                             Estado.setText("No obtuviste una ficha que poseas. Te quedan " + intentosRuletaRestantes + " intento(s).");
@@ -491,8 +495,8 @@ public class InterfazJuego {
         if (botonGirarRuleta != null) {
             botonGirarRuleta.setEnabled(true);
         }
-        
-         try {
+
+        try {
             int jugador = logica.getJugadorActual();
             intentosRuletaRestantes = logica.calcularIntentosExtra(jugador);
         } catch (Exception ignored) {
@@ -578,7 +582,7 @@ public class InterfazJuego {
         if (objetivo == null) {
             return false;
         }
-        
+
         try {
             if (objetivo.getJugador() == piezaSeleccionada.getJugador()) {
                 return false;
@@ -608,7 +612,10 @@ public class InterfazJuego {
         try {
             piezaSeleccionada.atacar(objetivo);
             if (!objetivo.estaVivo()) {
-               try { logica.registrarPerdida(objetivo); } catch (Exception ignored) {}
+                try {
+                    logica.registrarPerdida(objetivo);
+                } catch (Exception ignored) {
+                }
                 tablero.eliminarPieza(filaDestino, columnaDestino);
             }
             return true;
@@ -1155,7 +1162,4 @@ public class InterfazJuego {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new InterfazJuego());
-    }
 }

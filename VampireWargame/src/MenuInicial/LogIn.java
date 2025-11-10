@@ -1,4 +1,6 @@
 package MenuInicial;
+
+import Imagenes.Panel;
 import MenuPrincipal.MenuPrincipal;
 import javax.swing.*;
 import java.awt.*;
@@ -21,86 +23,88 @@ public class LogIn {
     }
 
     public void initcomponent() {
-        //Ventana principal -  Log In
-        JFrame VLogIn = new JFrame("Menu Inicial");
+        JFrame VLogIn = new JFrame();
         VLogIn.setSize(1200, 800);
-        VLogIn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VLogIn.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VLogIn.setResizable(false);
         VLogIn.setLocationRelativeTo(null);
+        VLogIn.setLayout(null);
 
-        //Panel principal 
-        JPanel PLogIn = new JPanel(new GridBagLayout());
+        Panel PPrincipal = new Panel("/Imagenes/BgMenu.png");
+        PPrincipal.setBounds(0, 0, 1186, 765);
 
-        //Color base
-        Color Azul = new Color(70, 130, 180);
+        Color amarillo = new Color(189, 100, 21);
 
-        //Panel Central -  Contenido: Titulo
         JPanel PCentral = new JPanel(new BorderLayout(0, 40));
         PCentral.setBackground(Color.WHITE);
-        PCentral.setPreferredSize(new Dimension(600, 500));
         PCentral.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 5),
+                BorderFactory.createLineBorder(amarillo, 5),
                 BorderFactory.createEmptyBorder(40, 60, 40, 60)
         ));
 
+        PCentral.setSize(650, 440);
+        PCentral.setLocation((1200 - 650) / 2, (800 - 460) / 2 + 75);
+        PCentral.setOpaque(true);
+
         JLabel lblTitulo = new JLabel("Iniciar Sesión", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
-        lblTitulo.setForeground(Azul);
+        lblTitulo.setForeground(amarillo);
 
-        //Panel Datos -  Contenido: Datos del usuario
-        JPanel PDatos = new JPanel(new GridLayout(2, 2, 5, 40));
+        JPanel PDatos = new JPanel(new GridLayout(2, 2, 50, 10));
         PDatos.setBackground(Color.WHITE);
 
         JLabel lblUsername = new JLabel("USUARIO:");
-        lblUsername.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblUsername.setForeground(Azul);
+        lblUsername.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblUsername.setForeground(amarillo);
         PDatos.add(lblUsername);
 
         txtUsername = new JTextField();
         txtUsername.setFont(new Font("Segoe UI", Font.BOLD, 20));
         txtUsername.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 3),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                BorderFactory.createLineBorder(amarillo, 3),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        txtUsername.setForeground(new Color(60, 70, 100));
+        txtUsername.setForeground(amarillo);
         PDatos.add(txtUsername);
 
         JLabel lblPassword = new JLabel("CONTRASEÑA:");
-        lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblPassword.setForeground(Azul);
+        lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblPassword.setForeground(amarillo);
         PDatos.add(lblPassword);
 
         txtPassword = new JPasswordField();
         txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         txtPassword.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Azul, 3),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                BorderFactory.createLineBorder(amarillo, 3),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
+        txtPassword.setForeground(amarillo);
         PDatos.add(txtPassword);
 
-        //Panel de Botones 
-        JPanel PBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 30));
+        JPanel PBotones = new JPanel(new GridLayout(1, 2, 10, 30));
         PBotones.setBackground(Color.WHITE);
-
-        JButton BtnLogin = new JButton("Iniciar Sesión");
-        JButton BtnSalir = new JButton("Salir");
-
+        JButton BtnLogin = new JButton("INICIAR SESIÓN");
+        JButton BtnSalir = new JButton("SALIR");
         JButton[] botones = {BtnLogin, BtnSalir};
 
         for (JButton b : botones) {
             b.setFont(new Font("Segoe UI", Font.BOLD, 30));
-            b.setBackground(Azul);
+            b.setBackground(amarillo);
             b.setForeground(Color.WHITE);
             b.setFocusPainted(false);
+            b.setContentAreaFilled(true);
+            b.setOpaque(true);
+
+            b.setBorder(BorderFactory.createLineBorder(amarillo, 2));
             PBotones.add(b);
 
             b.addMouseListener(new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
-                    b.setBackground(Azul.darker());
+                    b.setBackground(amarillo.darker());
                 }
 
                 public void mouseExited(MouseEvent e) {
-                    b.setBackground(Azul);
+                    b.setBackground(amarillo.brighter());
                 }
             });
         }
@@ -122,9 +126,13 @@ public class LogIn {
         PCentral.add(lblTitulo, BorderLayout.NORTH);
         PCentral.add(PDatos, BorderLayout.CENTER);
         PCentral.add(PBotones, BorderLayout.SOUTH);
+        VLogIn.add(PPrincipal);
+        VLogIn.add(PCentral);
+        VLogIn.getContentPane().setComponentZOrder(PCentral, 0);
+        VLogIn.getContentPane().setComponentZOrder(PPrincipal, 1);
 
-        PLogIn.add(PCentral);
-        VLogIn.add(PLogIn);
+        VLogIn.validate();
+        VLogIn.repaint();
         VLogIn.setVisible(true);
     }
 
@@ -146,7 +154,7 @@ public class LogIn {
 
         if (cuentaEncontrada != null) {
             if (cuentaEncontrada.getPassword().equals(password)) {
-                
+
             } else {
                 JOptionPane.showMessageDialog(null, "Error: Contraseña incorrecta.");
                 cuentaEncontrada = null;

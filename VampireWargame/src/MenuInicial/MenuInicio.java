@@ -1,7 +1,9 @@
 package MenuInicial;
 
+import Imagenes.Panel;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 /**
  *
@@ -17,35 +19,48 @@ public class MenuInicio {
     }
 
     public void inticomponent() {
-        JFrame VMenuInicio = new JFrame("Menu Inicial");
+        JFrame VMenuInicio = new JFrame();
         VMenuInicio.setSize(1200, 800);
-        VMenuInicio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        VMenuInicio.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         VMenuInicio.setResizable(false);
         VMenuInicio.setLayout(new BorderLayout());
         VMenuInicio.setLocationRelativeTo(null);
 
-        JPanel PMenuInicio = new JPanel(new BorderLayout());
+        Panel PMenuInicio = new Panel("/Imagenes/BgMenuInicial.png");
+        PMenuInicio.setLayout(new BorderLayout());
 
         JPanel PBotones = new JPanel(new GridLayout(3, 1, 0, 50));
-        PBotones.setBorder(BorderFactory.createEmptyBorder(250, 250, 50, 250));
-
+        PBotones.setOpaque(false);
+        PBotones.setBorder(BorderFactory.createEmptyBorder(350, 350, 100, 300));
+        
+        PBotones.setBackground(Color.WHITE);
         JButton BtnLogIn = new JButton("INICIAR SESIÓN");
-        JButton BtnCrearPlayer = new JButton("CREAR JUGADOR");
+        JButton BtnCrearPlayer = new JButton("CREAR CUENTA");
         JButton BtnSalir = new JButton("SALIR");
-
         JButton[] botones = {BtnLogIn, BtnCrearPlayer, BtnSalir};
 
-        Font fuente = new Font("Segoe UI", Font.BOLD, 30);
-        Color fondo = new Color(100, 149, 237);
-        Color colorTexto = Color.WHITE;
+        Color amarillo = new Color(189, 100, 21);
 
         for (JButton b : botones) {
-            b.setFont(fuente);
-            b.setBackground(fondo);
-            b.setForeground(colorTexto);
+            b.setFont(new Font("Segoe UI", Font.BOLD, 30));
+            b.setBackground(amarillo);
+            b.setForeground(Color.WHITE);
             b.setFocusPainted(false);
+            b.setContentAreaFilled(true);
+            b.setOpaque(true);
 
+            b.setBorder(BorderFactory.createLineBorder(amarillo, 6));
             PBotones.add(b);
+
+            b.addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent e) {
+                    b.setBackground(amarillo.darker());
+                }
+
+                public void mouseExited(MouseEvent e) {
+                    b.setBackground(amarillo.brighter());
+                }
+            });
         }
 
         BtnLogIn.addActionListener(e -> {
@@ -61,7 +76,7 @@ public class MenuInicio {
         BtnSalir.addActionListener(e -> System.exit(0));
 
         PMenuInicio.add(PBotones, BorderLayout.CENTER);
-        VMenuInicio.add(PMenuInicio);
+        VMenuInicio.setContentPane(PMenuInicio);
         VMenuInicio.setVisible(true);
     }
 
@@ -70,4 +85,3 @@ public class MenuInicio {
         new MenuInicio(accRegGlobal);
     }
 }
-
