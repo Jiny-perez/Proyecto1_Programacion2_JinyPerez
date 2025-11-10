@@ -32,7 +32,7 @@ public class MenuInicio {
         JPanel PBotones = new JPanel(new GridLayout(3, 1, 0, 50));
         PBotones.setOpaque(false);
         PBotones.setBorder(BorderFactory.createEmptyBorder(350, 350, 100, 300));
-        
+
         PBotones.setBackground(Color.WHITE);
         JButton BtnLogIn = new JButton("INICIAR SESIÓN");
         JButton BtnCrearPlayer = new JButton("CREAR CUENTA");

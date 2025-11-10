@@ -136,14 +136,150 @@ public class MiCuenta {
     }
 
     public void CambiarPassword() {
-        String newPassword = JOptionPane.showInputDialog(null, "Ingrese la nueva contraseña:");
-        String actualPassword = player.getPassword();
+        Color amarillo = new Color(189, 100, 21);
+        Font tituloFont = new Font("Segoe UI", Font.BOLD, 22);
+        Font labelFont = new Font("Segoe UI", Font.BOLD, 14);
+        Font botonFont = new Font("Segoe UI", Font.BOLD, 14);
 
-        boolean cambiarPassword = player.cambiarPassword(actualPassword, newPassword);
-        if (cambiarPassword) {
-            player.setPassword(newPassword);
-            JOptionPane.showMessageDialog(null, "Se ha cambiado de correctamente.");
+        JDialog dialogo = new JDialog((Frame) null, "CAMBIAR CONTRASEÑA", true);
+        dialogo.setSize(480, 340);
+        dialogo.setResizable(false);
+        dialogo.setLayout(new BorderLayout(0, 0));
+        dialogo.getContentPane().setBackground(Color.WHITE);
+        dialogo.setLocationRelativeTo(null);
+
+        JPanel cabecera = new JPanel(new BorderLayout());
+        cabecera.setBackground(Color.WHITE);
+        JLabel titulo = new JLabel("CAMBIAR CONTRASEÑA", SwingConstants.CENTER);
+        titulo.setFont(tituloFont);
+        titulo.setForeground(amarillo);
+        titulo.setBorder(BorderFactory.createEmptyBorder(16, 16, 8, 16));
+        cabecera.add(titulo, BorderLayout.CENTER);
+        dialogo.add(cabecera, BorderLayout.NORTH);
+
+        JPanel PFormulario = new JPanel(new GridBagLayout());
+        PFormulario.setBackground(Color.WHITE);
+
+        JPanel PDatos = new JPanel(new GridLayout(4, 2, 12, 12));
+        PDatos.setBackground(Color.WHITE);
+        PDatos.setOpaque(true);
+        PDatos.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+
+        String[] labelsText = {"Contraseña actual:", "Nueva contraseña:", "Confirmar Contraseña:"};
+        JLabel[] labels = new JLabel[labelsText.length];
+        JPasswordField[] fields = new JPasswordField[labelsText.length];
+
+        for (int i = 0; i < labelsText.length; i++) {
+            labels[i] = new JLabel(labelsText[i], SwingConstants.RIGHT);
+            labels[i].setFont(labelFont);
+            labels[i].setForeground(amarillo);
+
+            fields[i] = new JPasswordField();
+            fields[i].setFont(labelFont);
+            fields[i].setForeground(amarillo);
+            fields[i].setCaretColor(amarillo);
+            fields[i].setBackground(Color.WHITE);
+            fields[i].setBorder(BorderFactory.createLineBorder(amarillo, 1));
+            fields[i].setPreferredSize(new Dimension(250, 30));
+
+            PDatos.add(labels[i]);
+            PDatos.add(fields[i]);
         }
+
+        JCheckBox chkMostrarContra = new JCheckBox(" Ver contraseña");
+        chkMostrarContra.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        chkMostrarContra.setForeground(amarillo);
+        chkMostrarContra.setBackground(Color.WHITE);
+        chkMostrarContra.setFocusPainted(false);
+        chkMostrarContra.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        char ocultar = fields[0].getEchoChar();
+        chkMostrarContra.addActionListener(ev -> {
+            char echo = chkMostrarContra.isSelected() ? (char) 0 : ocultar;
+            for (JPasswordField f : fields) {
+                f.setEchoChar(echo);
+            }
+        });
+        
+        PDatos.add(new JLabel("")); 
+        PDatos.add(chkMostrarContra);
+
+        PFormulario.add(PDatos);
+        dialogo.add(PFormulario, BorderLayout.CENTER);
+
+        JPanel PBotones = new JPanel(new GridLayout(1, 2, 12, 0));
+        PBotones.setBackground(Color.WHITE);
+        PBotones.setOpaque(true);
+        PBotones.setBorder(BorderFactory.createEmptyBorder(12, 30, 20, 30));
+
+        String[] btnText = {"CANCELAR", "CAMBIAR"};
+        JButton[] btns = new JButton[2];
+        for (int i = 0; i < btns.length; i++) {
+            btns[i] = new JButton(btnText[i]);
+            btns[i].setFont(botonFont);
+            btns[i].setBackground(amarillo);
+            btns[i].setForeground(Color.WHITE); 
+            btns[i].setFocusPainted(false);
+            btns[i].setContentAreaFilled(true);
+            btns[i].setOpaque(true);
+            
+            btns[i].setBorder(BorderFactory.createLineBorder(amarillo, 2));
+            final JButton b = btns[i];
+            
+            b.addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent e) {
+                    b.setBackground(amarillo.brighter());
+                }
+
+                public void mouseExited(MouseEvent e) {
+                    b.setBackground(amarillo.darker());
+                }
+            });
+            PBotones.add(btns[i]);
+        }
+        
+        btns[0].setBackground(new Color(170, 170, 170));
+        btns[0].setForeground(Color.WHITE);
+        btns[0].addActionListener(ae -> dialogo.dispose()); 
+
+        btns[1].addActionListener(ae -> { 
+            String actual = new String(fields[0].getPassword()).trim();
+            String nueva = new String(fields[1].getPassword()).trim();
+            String confirm = new String(fields[2].getPassword()).trim();
+
+            if (actual.isEmpty() || nueva.isEmpty() || confirm.isEmpty()) {
+                JOptionPane.showMessageDialog(dialogo, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (!actual.equals(player.getPassword())) {
+                JOptionPane.showMessageDialog(dialogo, "La contraseña actual no coincide.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (!nueva.equals(confirm)) {
+                JOptionPane.showMessageDialog(dialogo, "La nueva contraseña y la confirmación no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            boolean ok = player.cambiarPassword(actual, nueva);
+            if (!ok) {
+                JOptionPane.showMessageDialog(dialogo, "No se pudo cambiar la contraseña. Revise las reglas de contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            player.setPassword(nueva);
+            JOptionPane.showMessageDialog(dialogo, "Contraseña cambiada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            dialogo.dispose();
+        });
+
+        dialogo.add(PBotones, BorderLayout.SOUTH);
+
+        dialogo.getRootPane().setDefaultButton(btns[1]); // Enter = CAMBIAR
+        dialogo.getRootPane().registerKeyboardAction(e -> dialogo.dispose(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        dialogo.setVisible(true);
     }
 
     public void EliminarCuenta() {

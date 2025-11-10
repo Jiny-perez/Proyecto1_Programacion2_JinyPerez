@@ -79,6 +79,8 @@ public class CrearPlayer {
                 BorderFactory.createLineBorder(amarillo, 3),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
+        txtPassword.setForeground(amarillo);
+        txtPassword.setCaretColor(amarillo);
         PDatos.add(txtPassword);
 
         JCheckBox chkMostrarContra = new JCheckBox("Ver contraseña");
