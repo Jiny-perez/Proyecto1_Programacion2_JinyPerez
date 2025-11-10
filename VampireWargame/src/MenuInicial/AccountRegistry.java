@@ -51,31 +51,48 @@ public class AccountRegistry implements AccountManager {
     }
 
     public Account buscarPlayer(String username) {
-        try {
-            for (int i = 0; i < player.size(); i++) {
-                if (player.get(i).getUsername().equalsIgnoreCase(username)) {
-                    return player.get(i);
-                }
-            }
-            throw new UsernameException("Usuario no encontrado: " + username);
-        } catch (UsernameException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            return null;
-        }
+    try {
+        return buscarPlayerRecursivo(username, 0);
+    } catch (UsernameException e) {
+        JOptionPane.showMessageDialog(null, e.getMessage());
+        return null;
     }
+}
+
+private Account buscarPlayerRecursivo(String username, int index) throws UsernameException {
+    if (index >= player.size()) {
+        throw new UsernameException("Usuario no encontrado: " + username);
+    }
+
+    Account actual = player.get(index);
+    if (actual.getUsername().equalsIgnoreCase(username)) {
+        return actual;
+    }
+
+    return buscarPlayerRecursivo(username, index + 1);
+}
 
     public boolean eliminarPlayer(String username) {
         try {
-            Account playerEncontrado = buscarPlayer(username);
-            if (playerEncontrado == null) {
-                throw new UsernameException("El usuario no existe.");
-            }
-            player.remove(playerEncontrado);
-            return true;
+            return eliminarPlayerRecursivo(username, 0);
         } catch (UsernameException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
             return false;
         }
+    }
+
+    private boolean eliminarPlayerRecursivo(String username, int index) throws UsernameException {
+        if (index >= player.size()) {
+            throw new UsernameException("El usuario no existe.");
+        }
+
+        Account actual = player.get(index);
+        if (actual.getUsername().equalsIgnoreCase(username)) {
+            player.remove(index);
+            return true;
+        }
+
+        return eliminarPlayerRecursivo(username, index + 1);
     }
 
     public List<Account> rankingPlayers() {

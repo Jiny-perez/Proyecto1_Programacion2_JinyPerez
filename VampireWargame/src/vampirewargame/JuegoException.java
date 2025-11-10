@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package vampirewargame;
 
 /**
  *
  * @author marye
  */
-public class JuegoException {
-    
+public class JuegoException extends Exception {
+      public JuegoException(String mensaje) {
+        super(mensaje);
+    }
+
+    public JuegoException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
+    }
 }

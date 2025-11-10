@@ -66,7 +66,32 @@ class Tablero {
         return false;
     }
 
-    public int distanciaMaxima(int f1, int c1, int f2, int c2) {
+    public int contarPiezas(int numJugador) {
+        return contarPiezasJugador(numJugador, 0, 0);
+    }
+
+    private int contarPiezasJugador(int numJugador, int f, int c) {
+        if (f >= 6) {
+            return 0;
+        }
+
+        int contador = 0;
+        Piezas p = get(f, c);
+        try {
+            if (p != null && p.getJugador() == numJugador) {
+                contador++;
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (c < 5) {
+            return contador + contarPiezasJugador(numJugador, f, c + 1);
+        } else {
+            return contador + contarPiezasJugador(numJugador, f + 1, 0);
+        }
+    }
+
+   public int distanciaMaxima(int f1, int c1, int f2, int c2) {
         int difFila = Math.abs(f2 - f1);
         int difCol = Math.abs(c2 - c1);
         return Math.max(difFila, difCol);

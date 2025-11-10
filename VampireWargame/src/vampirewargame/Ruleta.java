@@ -38,7 +38,6 @@ public class Ruleta extends JPanel {
         setBackground(new Color(28, 28, 28));
         setOpaque(true);
 
-        // Timer
         timer = new Timer(16, e -> {
             if (Math.abs(velocidad) > 0.01) {
                 angulo += velocidad;
@@ -55,7 +54,7 @@ public class Ruleta extends JPanel {
                         if (listener != null) {
                             listener.piezaSeleccionada(tipo);
                         }
-                        JOptionPane.showMessageDialog(this, "Pieza: " + piezaSeleccionada, "", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Pieza: " + tipo, "", JOptionPane.INFORMATION_MESSAGE);
                     });
                 }
                 repaint();
@@ -112,11 +111,9 @@ public class Ruleta extends JPanel {
         int cx = w / 2, cy = h / 2;
         int radio = size / 2;
 
-        // Fondo
         g2.setColor(getBackground());
         g2.fillRect(0, 0, w, h);
 
-        // Rueda rotada
         AffineTransform old = g2.getTransform();
         g2.translate(cx, cy);
         g2.rotate(angulo);
@@ -164,12 +161,10 @@ public class Ruleta extends JPanel {
 
         g2.setTransform(old);
 
-        // Borde exterior
         g2.setColor(new Color(50, 50, 50));
         g2.setStroke(new BasicStroke(10f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2.drawOval(cx - radio - 6, cy - radio - 6, (radio + 6) * 2, (radio + 6) * 2);
 
-        // punto central
         g2.setColor(new Color(245, 245, 245));
         g2.fillOval(cx - 34, cy - 34, 68, 68);
         g2.setColor(new Color(150, 150, 150));
